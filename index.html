@@ -10,6 +10,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .account-actions{display:flex;align-items:center;gap:8px}
+    .logout-button{height:50px;border:1px solid #e6ece9;background:#fff;color:#7a4b45;border-radius:16px;padding:0 14px;display:flex;align-items:center;gap:7px;font-weight:700;transition:.2s}
+    .logout-button:hover{background:#fff4f1;border-color:#e9c6bd;color:#9a473a;transform:translateY(-1px)}
+    .logout-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    @media(max-width:760px){.logout-button{width:44px;height:44px;padding:0;justify-content:center;border-radius:13px}.logout-button .logout-text{display:none}.account-actions{gap:6px}.profile-pill{padding-right:8px}}
+  </style>
 </head>
 <body>
   <div class="ambient ambient-one"></div>
@@ -74,10 +81,16 @@
         <a href="#missions">ภารกิจ</a>
         <a href="#progress">ความก้าวหน้า</a>
       </nav>
-      <button class="profile-pill" id="profileButton" type="button" aria-label="ข้อมูลผู้เล่น">
-        <span class="avatar" id="avatarInitial">T</span>
-        <span class="profile-copy"><strong id="profileName">นักเรียน</strong><small id="profileLevel">Eco Explorer</small></span>
-      </button>
+      <div class="account-actions">
+        <button class="profile-pill" id="profileButton" type="button" aria-label="ข้อมูลผู้เล่น">
+          <span class="avatar" id="avatarInitial">T</span>
+          <span class="profile-copy"><strong id="profileName">นักเรียน</strong><small id="profileLevel">Eco Explorer</small></span>
+        </button>
+        <button class="logout-button" id="logoutButton" type="button" aria-label="ออกจากระบบ">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path></svg>
+          <span class="logout-text">ออกจากระบบ</span>
+        </button>
+      </div>
     </header>
 
     <main>
@@ -194,5 +207,17 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="app.js"></script>
+  <script>
+    document.getElementById('logoutButton')?.addEventListener('click', function () {
+      const confirmed = window.confirm('ต้องการออกจากระบบใช่หรือไม่?\nความก้าวหน้าที่บันทึกในระบบจะไม่หาย');
+      if (!confirmed) return;
+      localStorage.removeItem('lqIdentity');
+      try {
+        if (document.getElementById('missionModal')?.open) document.getElementById('missionModal').close();
+        if (document.getElementById('howToModal')?.open) document.getElementById('howToModal').close();
+      } catch (_) {}
+      window.location.reload();
+    });
+  </script>
 </body>
 </html>
