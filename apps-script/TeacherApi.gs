@@ -221,9 +221,11 @@ function teacherExportReport_(body) {
 function buildResearchReport_() {
   const students = readObjects_(APP.SHEETS.STUDENTS).filter(s => String(s.Status || 'Active').toLowerCase() !== 'inactive' && String(s.Nickname || '').toUpperCase() !== 'TEST' && String(s.StudentID || '').trim() !== '12345');
   const missions = readObjects_(APP.SHEETS.MISSIONS).filter(r => isTrue_(r.IsActive)).sort((a,b) => Number(a.Order || 0) - Number(b.Order || 0));
-  const progress = readObjects_(APP.SHEETS.PROGRESS);
-  const scores = readObjects_(APP.SHEETS.RESEARCH_SCORES).filter(r => String(r.Status || '') === 'Completed');
-  const reflections = readObjects_(APP.SHEETS.REFLECTIONS);
+  const researchIds = new Set(students.map(s => String(s.StudentID || '').trim()));
+  const scores = readObjects_(APP.SHEETS.RESEARCH_SCORES).filter(r => String(r.Status || '') === 'Completed' && researchIds.has(String(r.StudentID || '').trim()));
+  const progressAll = readObjects_(APP.SHEETS.PROGRESS);
+  const progress = progressAll.filter(r => researchIds.has(String(r.StudentID || '').trim()));
+  const reflections = readObjects_(APP.SHEETS.REFLECTIONS).filter(r => researchIds.has(String(r.StudentID || '').trim()));
   const header = ['StudentID','FullName','Class','LastLogin','Pre_D1','Pre_D2','Pre_D3','Pre_D4','Pre_Overall'].concat(missions.map(m => String(m.MissionID || '') + '_Score')).concat(['CompletedMissions','TotalEcoPoints','Post_D1','Post_D2','Post_D3','Post_D4','Post_Overall','Status']);
   const rows = [header];
   students.forEach(s => {
