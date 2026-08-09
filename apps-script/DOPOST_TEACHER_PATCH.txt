@@ -1,0 +1,25 @@
+ให้นำ switch(action) ในฟังก์ชัน doPost(e) ของ Code.gs แทนด้วยชุดนี้
+
+switch (action) {
+  case 'login':
+    return json_(login_(body));
+  case 'submitAnswer':
+    return json_(submitAnswer_(body));
+  case 'completeMission':
+    return json_(completeMission_(body));
+  case 'saveReflection':
+    return json_(saveReflection_(body));
+  case 'startMission':
+    return json_(startMission_(body));
+  case 'teacherLogin':
+    return json_(teacherLogin_(body));
+  case 'teacherDashboard':
+    return json_(teacherDashboard_(body));
+  case 'teacherStudentDetail':
+    return json_(teacherStudentDetail_(body));
+  default:
+    return json_({ ok: false, error: 'UNKNOWN_ACTION', message: 'ไม่พบ action ที่ร้องขอ' });
+}
+
+จากนั้นใน Apps Script ให้สร้างไฟล์ใหม่ชื่อ TeacherApi.gs แล้วคัดลอกเนื้อหาจาก GitHub: apps-script/TeacherApi.gs ทั้งหมด
+จากนั้น Deploy > Manage deployments > Edit > New version > Deploy เพื่อให้ URL /exec เดิมใช้ API ครูเวอร์ชันใหม่
