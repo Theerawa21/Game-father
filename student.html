@@ -4,204 +4,71 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b6b4f" />
-  <meta name="description" content="LAUDATO QUEST เว็บแอปพลิเคชันเกมมิฟิเคชัน เรื่อง พระสมณสาส์น Laudato Si’" />
+  <meta name="description" content="LAUDATO QUEST ระบบนักเรียน" />
   <title>LAUDATO QUEST | ระบบนักเรียน</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="research.css" />
   <link rel="stylesheet" href="responsive.css" />
   <style>
-    .account-actions{display:flex;align-items:center;gap:8px}
-    .logout-button{height:50px;border:1px solid #e6ece9;background:#fff;color:#7a4b45;border-radius:16px;padding:0 14px;display:flex;align-items:center;gap:7px;font-weight:700;transition:.2s}
-    .logout-button:hover{background:#fff4f1;border-color:#e9c6bd;color:#9a473a;transform:translateY(-1px)}
-    .logout-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .portal-back{display:inline-flex;align-items:center;gap:7px;color:#4d7466;text-decoration:none;font:600 13px "Sarabun";margin-bottom:22px}.portal-back:hover{color:#0b6b4f}
-    @media(max-width:760px){.logout-button{width:44px;height:44px;padding:0;justify-content:center;border-radius:13px}.logout-button .logout-text{display:none}.account-actions{gap:6px}.profile-pill{padding-right:8px}}
+    .account-actions{display:flex;align-items:center;gap:8px}.logout-button{height:50px;border:1px solid #e6ece9;background:#fff;color:#7a4b45;border-radius:16px;padding:0 14px;display:flex;align-items:center;gap:7px;font-weight:700}.logout-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.portal-back{display:inline-flex;align-items:center;gap:7px;color:#4d7466;text-decoration:none;font:600 13px "Sarabun";margin-bottom:22px}@media(max-width:760px){.logout-button{width:44px;height:44px;padding:0;justify-content:center;border-radius:13px}.logout-button .logout-text{display:none}.account-actions{gap:6px}.profile-pill{padding-right:8px}}
   </style>
 </head>
 <body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
 
   <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
     <div class="login-visual" aria-hidden="true">
-      <div class="planet-wrap">
-        <div class="planet">
-          <span class="leaf leaf-a">◆</span>
-          <span class="leaf leaf-b">◆</span>
-          <span class="leaf leaf-c">◆</span>
-          <div class="planet-ring"></div>
-        </div>
-        <div class="orbit orbit-a"><span>♻</span></div>
-        <div class="orbit orbit-b"><span>✦</span></div>
-        <div class="orbit orbit-c"><span>☘</span></div>
-      </div>
+      <div class="planet-wrap"><div class="planet"><span class="leaf leaf-a">◆</span><span class="leaf leaf-b">◆</span><span class="leaf leaf-c">◆</span><div class="planet-ring"></div></div><div class="orbit orbit-a"><span>♻</span></div><div class="orbit orbit-b"><span>✦</span></div><div class="orbit orbit-c"><span>☘</span></div></div>
       <p class="visual-quote">“ทุกการตัดสินใจของเรา<br>มีผลต่อบ้านส่วนรวม”</p>
     </div>
-
     <div class="login-panel">
       <a class="portal-back" href="index.html">← กลับหน้าหลักระบบ</a>
-      <div class="brand brand-login">
-        <div class="brand-mark">LQ</div>
-        <div>
-          <strong>LAUDATO QUEST</strong>
-          <span>ภารกิจพิทักษ์บ้านส่วนรวม</span>
-        </div>
-      </div>
-
-      <div class="login-copy">
-        <h1 id="loginTitle">เริ่มภารกิจของคุณ</h1>
-        <p>เข้าสู่ระบบเพื่อเรียนรู้ คิด ตัดสินใจ และสะสม Eco Points ผ่าน 5 ภารกิจจาก <em>Laudato Si’</em></p>
-      </div>
-
-      <form id="loginForm" class="login-form">
-        <label>
-          <span>รหัสนักเรียน</span>
-          <input id="studentId" name="studentId" inputmode="numeric" autocomplete="username" placeholder="เช่น 12345" required />
-        </label>
-        <label>
-          <span>ชื่อ–นามสกุล</span>
-          <input id="studentName" name="studentName" autocomplete="name" placeholder="กรอกชื่อ–นามสกุล" required />
-        </label>
-        <button class="btn btn-primary btn-large" type="submit">เข้าสู่บ้านส่วนรวม <span>→</span></button>
-      </form>
+      <div class="brand brand-login"><div class="brand-mark">LQ</div><div><strong>LAUDATO QUEST</strong><span>ภารกิจพิทักษ์บ้านส่วนรวม</span></div></div>
+      <div class="login-copy"><h1 id="loginTitle">เริ่มภารกิจของคุณ</h1><p>เข้าสู่ระบบเพื่อทำแบบวัดก่อนเรียน เรียนรู้ผ่าน 5 Mission และทำแบบวัดหลังเรียน โดยคะแนนวิจัยแยกจาก Eco Points</p></div>
+      <form id="loginForm" class="login-form"><label><span>รหัสนักเรียน</span><input id="studentId" name="studentId" inputmode="numeric" autocomplete="username" placeholder="เช่น 12345" required /></label><label><span>ชื่อ–นามสกุล</span><input id="studentName" name="studentName" autocomplete="name" placeholder="กรอกชื่อ–นามสกุล" required /></label><button class="btn btn-primary btn-large" type="submit">เข้าสู่บ้านส่วนรวม <span>→</span></button></form>
       <p class="login-note">สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 6 โรงเรียนเซนต์เทเรซา</p>
     </div>
   </section>
 
   <div class="app-shell is-hidden" id="appShell">
     <header class="topbar">
-      <a class="brand" href="#home" aria-label="LAUDATO QUEST หน้าหลัก">
-        <div class="brand-mark">LQ</div>
-        <div>
-          <strong>LAUDATO QUEST</strong>
-          <span>ภารกิจพิทักษ์บ้านส่วนรวม</span>
-        </div>
-      </a>
-      <nav class="nav-links" aria-label="เมนูหลัก">
-        <a class="active" href="#home">หน้าหลัก</a>
-        <a href="#missions">ภารกิจ</a>
-        <a href="#progress">ความก้าวหน้า</a>
-      </nav>
-      <div class="account-actions">
-        <button class="profile-pill" id="profileButton" type="button" aria-label="ข้อมูลผู้เล่น">
-          <span class="avatar" id="avatarInitial">T</span>
-          <span class="profile-copy"><strong id="profileName">นักเรียน</strong><small id="profileLevel">Eco Explorer</small></span>
-        </button>
-        <button class="logout-button" id="logoutButton" type="button" aria-label="ออกจากระบบ">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path></svg>
-          <span class="logout-text">ออกจากระบบ</span>
-        </button>
-      </div>
+      <a class="brand" href="#home"><div class="brand-mark">LQ</div><div><strong>LAUDATO QUEST</strong><span>ภารกิจพิทักษ์บ้านส่วนรวม</span></div></a>
+      <nav class="nav-links"><a class="active" href="#home">หน้าหลัก</a><a href="#researchFlow">ลำดับการเรียนรู้</a><a href="#missions">ภารกิจ</a><a href="#progress">ความก้าวหน้า</a></nav>
+      <div class="account-actions"><button class="profile-pill" id="profileButton" type="button"><span class="avatar" id="avatarInitial">T</span><span class="profile-copy"><strong id="profileName">นักเรียน</strong><small id="profileLevel">Eco Explorer</small></span></button><button class="logout-button" id="logoutButton" type="button" aria-label="ออกจากระบบ"><svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path><path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path></svg><span class="logout-text">ออกจากระบบ</span></button></div>
     </header>
 
     <main>
+      <div class="system-notice is-hidden" id="systemNotice"></div>
       <section class="hero" id="home">
-        <div class="hero-copy">
-          <p class="section-label">OUR COMMON HOME</p>
-          <h1>5 ภารกิจ เพื่อมองโลก<br><span>ด้วยความรับผิดชอบ</span></h1>
-          <p class="hero-description">เรียนรู้จากสถานการณ์ใกล้ตัว เชื่อมโยงผลกระทบ ตัดสินใจ และสะท้อนการเปลี่ยนแปลงของตัวเองตามแนวคิด <em>Laudato Si’</em></p>
-          <div class="hero-actions">
-            <button class="btn btn-primary" id="continueButton" type="button">เริ่มภารกิจแรก <span>→</span></button>
-            <button class="btn btn-ghost" id="howToPlayButton" type="button">วิธีเล่น</button>
-          </div>
-        </div>
+        <div class="hero-copy"><p class="section-label">OUR COMMON HOME</p><h1>5 ภารกิจ เพื่อมองโลก<br><span>ด้วยความรับผิดชอบ</span></h1><p class="hero-description">เรียนรู้จากสถานการณ์ใกล้ตัว เชื่อมโยงผลกระทบ ตัดสินใจ และสะท้อนการเปลี่ยนแปลงของตัวเองตามแนวคิด <em>Laudato Si’</em></p><div class="hero-actions"><button class="btn btn-primary" id="continueButton" type="button">เริ่มการเรียนรู้ <span>→</span></button><button class="btn btn-ghost" id="howToPlayButton" type="button">วิธีเล่น</button><button class="btn btn-certificate is-hidden" id="certificateButton" type="button">ใบประกาศ Guardian</button></div></div>
+        <div class="hero-dashboard"><div class="hero-orbit"><div class="mini-earth">♻</div><span class="dot dot-1"></span><span class="dot dot-2"></span><span class="dot dot-3"></span></div><div class="progress-ring" id="progressRing" style="--progress:0"><div><strong id="progressPercent">0%</strong><span>ความก้าวหน้า</span></div></div><div class="current-status"><span>ระดับปัจจุบัน</span><strong id="heroLevel">Eco Explorer</strong><small id="heroLevelThai">ผู้เริ่มสำรวจ</small></div></div>
+      </section>
 
-        <div class="hero-dashboard" aria-label="สรุปความก้าวหน้าผู้เล่น">
-          <div class="hero-orbit">
-            <div class="mini-earth">♻</div>
-            <span class="dot dot-1"></span><span class="dot dot-2"></span><span class="dot dot-3"></span>
-          </div>
-          <div class="progress-ring" id="progressRing" style="--progress:0">
-            <div><strong id="progressPercent">0%</strong><span>ความก้าวหน้า</span></div>
-          </div>
-          <div class="current-status">
-            <span>ระดับปัจจุบัน</span>
-            <strong id="heroLevel">Eco Explorer</strong>
-            <small id="heroLevelThai">ผู้เริ่มสำรวจ</small>
-          </div>
+      <section class="research-flow-section" id="researchFlow">
+        <div class="section-heading"><div><p class="section-label">RESEARCH LEARNING FLOW</p><h2>ลำดับการเรียนรู้และการเก็บข้อมูล</h2><p>คะแนนแบบวัดก่อน–หลังเรียนแยกจากคะแนนเกม Eco Points และใช้สำหรับการวิเคราะห์ผลการวิจัย</p></div></div>
+        <div class="research-flow-grid">
+          <article class="research-step pending" id="pretestStep"><span class="research-step-no">01</span><div><small>ก่อนเริ่มเกม</small><h3>แบบวัดก่อนเรียน</h3><p>แบบวัดจิตสำนึกรับผิดชอบต่อสิ่งแวดล้อม 40 ข้อ</p><strong class="research-step-status">รอดำเนินการ</strong><button class="research-action" id="pretestButton" type="button">ทำแบบวัดก่อนเรียน</button></div></article>
+          <article class="research-step pending" id="missionsStep"><span class="research-step-no">02</span><div><small>การจัดการเรียนรู้</small><h3>LAUDATO QUEST</h3><p>เรียนรู้ผ่าน 5 Mission พร้อม Situation Challenge, Feedback และ Reflection</p><strong class="research-step-status">0/5 Mission</strong><a class="research-action link" href="#missions">ดูภารกิจ</a></div></article>
+          <article class="research-step pending" id="posttestStep"><span class="research-step-no">03</span><div><small>หลังครบทุก Mission</small><h3>แบบวัดหลังเรียน</h3><p>ใช้แบบวัดชุดเดียวกับก่อนเรียนเพื่อเปรียบเทียบผล</p><strong class="research-step-status">รอดำเนินการ</strong><button class="research-action blue" id="posttestButton" type="button">ผ่าน 5 Mission เพื่อปลดล็อก</button></div></article>
         </div>
       </section>
 
-      <section class="stat-strip" id="progress">
-        <article><span class="stat-icon">✦</span><div><strong id="ecoPoints">0</strong><span>Eco Points</span></div></article>
-        <article><span class="stat-icon">✓</span><div><strong id="completedCount">0/5</strong><span>ภารกิจสำเร็จ</span></div></article>
-        <article><span class="stat-icon">◇</span><div><strong id="badgeCount">0</strong><span>เหรียญที่ได้รับ</span></div></article>
-        <article><span class="stat-icon">↗</span><div><strong id="nextTarget">100</strong><span>คะแนนสู่ระดับถัดไป</span></div></article>
-      </section>
+      <section class="stat-strip" id="progress"><article><span class="stat-icon">✦</span><div><strong id="ecoPoints">0</strong><span>Eco Points</span></div></article><article><span class="stat-icon">✓</span><div><strong id="completedCount">0/5</strong><span>ภารกิจสำเร็จ</span></div></article><article><span class="stat-icon">◇</span><div><strong id="badgeCount">0</strong><span>เหรียญที่ได้รับ</span></div></article><article><span class="stat-icon">↗</span><div><strong id="nextTarget">100</strong><span>คะแนนสู่ระดับถัดไป</span></div></article></section>
 
-      <section class="mission-section" id="missions">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">MISSION JOURNEY</p>
-            <h2>เส้นทางผู้พิทักษ์บ้านส่วนรวม</h2>
-            <p>ผ่านแต่ละภารกิจเพื่อปลดล็อกบทเรียนถัดไป ทุก Mission เต็ม 100 Eco Points</p>
-          </div>
-          <div class="legend"><span class="legend-dot done"></span>สำเร็จ <span class="legend-dot open"></span>พร้อมเล่น <span class="legend-dot locked"></span>ล็อก</div>
-        </div>
-        <div class="journey" id="missionJourney"></div>
-      </section>
+      <section class="mission-section" id="missions"><div class="section-heading"><div><p class="section-label">MISSION JOURNEY</p><h2>เส้นทางผู้พิทักษ์บ้านส่วนรวม</h2><p>ผ่านแต่ละภารกิจเพื่อปลดล็อกบทเรียนถัดไป ทุก Mission เต็ม 100 Eco Points</p></div><div class="legend"><span class="legend-dot done"></span>สำเร็จ <span class="legend-dot open"></span>พร้อมเล่น <span class="legend-dot locked"></span>ล็อก</div></div><div class="journey" id="missionJourney"></div></section>
 
-      <section class="learning-section">
-        <div class="learning-copy">
-          <p class="section-label">HOW YOU LEARN</p>
-          <h2>ไม่ใช่แค่ตอบถูก แต่ต้องเห็นผลของการเลือก</h2>
-          <p>เกมจะพาคุณผ่านวงจรการเรียนรู้ที่เชื่อมความรู้ คุณค่า ความรับผิดชอบ และการปฏิบัติจริงเข้าด้วยกัน</p>
-        </div>
-        <div class="learning-flow" aria-label="วงจรการเรียนรู้">
-          <div><span>01</span><strong>เรียนรู้</strong><small>สำรวจข้อมูลสำคัญ</small></div><i>→</i>
-          <div><span>02</span><strong>วิเคราะห์</strong><small>เชื่อมสาเหตุและผลกระทบ</small></div><i>→</i>
-          <div><span>03</span><strong>ตัดสินใจ</strong><small>เลือกจากสถานการณ์จริง</small></div><i>→</i>
-          <div><span>04</span><strong>สะท้อนคิด</strong><small>พิจารณาสิ่งที่จะเปลี่ยน</small></div>
-        </div>
-      </section>
+      <section class="learning-section"><div class="learning-copy"><p class="section-label">HOW YOU LEARN</p><h2>ไม่ใช่แค่ตอบถูก แต่ต้องเห็นผลของการเลือก</h2><p>เกมจะพาคุณผ่านวงจรการเรียนรู้ที่เชื่อมความรู้ คุณค่า ความรับผิดชอบ และการปฏิบัติจริงเข้าด้วยกัน</p></div><div class="learning-flow"><div><span>01</span><strong>เรียนรู้</strong><small>สำรวจข้อมูลสำคัญ</small></div><i>→</i><div><span>02</span><strong>วิเคราะห์</strong><small>เชื่อมสาเหตุและผลกระทบ</small></div><i>→</i><div><span>03</span><strong>ตัดสินใจ</strong><small>เลือกจากสถานการณ์จริง</small></div><i>→</i><div><span>04</span><strong>สะท้อนคิด</strong><small>พิจารณาสิ่งที่จะเปลี่ยน</small></div></div></section>
     </main>
-
-    <footer>
-      <div class="footer-brand"><strong>LAUDATO QUEST</strong><span>เว็บแอปพลิเคชันเกมมิฟิเคชันเพื่อการเรียนรู้</span></div>
-      <p>โรงเรียนเซนต์เทเรซา · Laudato Si’ · Our Common Home</p>
-    </footer>
+    <footer><div class="footer-brand"><strong>LAUDATO QUEST</strong><span>เว็บแอปพลิเคชันเกมมิฟิเคชันเพื่อการเรียนรู้</span></div><p>โรงเรียนเซนต์เทเรซา · Laudato Si’ · Our Common Home</p></footer>
   </div>
 
-  <dialog class="modal" id="missionModal">
-    <div class="modal-shell">
-      <button class="modal-close" id="missionClose" type="button" aria-label="ปิด">×</button>
-      <div class="modal-progress"><span id="modalProgressBar"></span></div>
-      <div id="missionModalContent"></div>
-    </div>
-  </dialog>
-
-  <dialog class="modal compact" id="howToModal">
-    <div class="modal-shell">
-      <button class="modal-close" id="howToClose" type="button" aria-label="ปิด">×</button>
-      <div class="howto-content">
-        <p class="section-label">HOW TO PLAY</p>
-        <h2>วิธีเล่น LAUDATO QUEST</h2>
-        <ol>
-          <li><span>1</span><div><strong>อ่าน Learning Card</strong><p>ทำความเข้าใจแนวคิดสำคัญของแต่ละ Mission</p></div></li>
-          <li><span>2</span><div><strong>ตอบ Situation Challenge</strong><p>วิเคราะห์สถานการณ์และเลือกคำตอบที่เหมาะสม</p></div></li>
-          <li><span>3</span><div><strong>อ่าน Impact Feedback</strong><p>ดูผลจากการตัดสินใจ ไม่ใช่แค่รู้ว่าถูกหรือผิด</p></div></li>
-          <li><span>4</span><div><strong>ผ่านอย่างน้อย 60%</strong><p>รับ Badge และปลดล็อก Mission ถัดไป</p></div></li>
-        </ol>
-      </div>
-    </div>
-  </dialog>
-
+  <dialog class="modal" id="missionModal"><div class="modal-shell"><button class="modal-close" id="missionClose" type="button">×</button><div class="modal-progress"><span id="modalProgressBar"></span></div><div id="missionModalContent"></div></div></dialog>
+  <dialog class="modal compact" id="howToModal"><div class="modal-shell"><button class="modal-close" id="howToClose" type="button">×</button><div class="howto-content"><p class="section-label">HOW TO PLAY</p><h2>วิธีเล่น LAUDATO QUEST</h2><ol><li><span>1</span><div><strong>ทำแบบวัดก่อนเรียน</strong><p>ระบบเก็บคะแนนวิจัยแยกจาก Eco Points</p></div></li><li><span>2</span><div><strong>ผ่าน 5 Mission</strong><p>อ่าน Learning Card วิเคราะห์สถานการณ์ และรับ Feedback</p></div></li><li><span>3</span><div><strong>Reflection</strong><p>สะท้อนสิ่งที่เรียนรู้และ Eco Commitment</p></div></li><li><span>4</span><div><strong>ทำแบบวัดหลังเรียน</strong><p>เมื่อผ่านครบทุก Mission ระบบจะปลดล็อก Posttest</p></div></li></ol></div></div></dialog>
+  <dialog class="assessment-modal" id="assessmentModal"><div class="assessment-shell"><button class="modal-close" id="assessmentClose" type="button">×</button><div id="assessmentContent"></div></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
   <script src="app.js"></script>
-  <script>
-    document.getElementById('logoutButton')?.addEventListener('click', function () {
-      const confirmed = window.confirm('ต้องการออกจากระบบใช่หรือไม่?\nความก้าวหน้าที่บันทึกในระบบจะไม่หาย');
-      if (!confirmed) return;
-      localStorage.removeItem('lqIdentity');
-      try {
-        if (document.getElementById('missionModal')?.open) document.getElementById('missionModal').close();
-        if (document.getElementById('howToModal')?.open) document.getElementById('howToModal').close();
-      } catch (_) {}
-      window.location.reload();
-    });
-  </script>
 </body>
 </html>
