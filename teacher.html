@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b6249" />
+  <title>LAUDATO QUEST | ระบบครูผู้สอน</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="teacher.css" />
+</head>
+<body>
+  <section class="teacher-login" id="teacherLoginView">
+    <div class="login-card">
+      <a class="back-link" href="index.html">← กลับหน้าสำหรับนักเรียน</a>
+      <div class="teacher-mark">T</div>
+      <h1>ระบบครูผู้สอน</h1>
+      <p>ตรวจสอบความก้าวหน้า คะแนน การตอบคำถาม และ Reflection ของนักเรียนใน LAUDATO QUEST</p>
+      <form id="teacherLoginForm">
+        <label><span>ชื่อผู้ใช้</span><input id="teacherUsername" autocomplete="username" required /></label>
+        <label><span>รหัสผ่าน</span><input id="teacherPin" type="password" inputmode="numeric" autocomplete="current-password" required /></label>
+        <button type="submit" class="primary-btn" id="teacherLoginButton">เข้าสู่ระบบครู</button>
+      </form>
+      <p class="security-note">ข้อมูลส่วนครูตรวจสอบสิทธิ์ผ่าน Google Apps Script และไม่เก็บรหัสผ่านไว้ในหน้าเว็บ</p>
+    </div>
+  </section>
+
+  <div class="dashboard hidden" id="teacherDashboard">
+    <header class="teacher-topbar">
+      <a class="brand" href="teacher.html"><span class="brand-mark">LQ</span><span><strong>LAUDATO QUEST</strong><small>Teacher Dashboard</small></span></a>
+      <div class="top-actions">
+        <span class="teacher-name" id="teacherName">ครูผู้สอน</span>
+        <button class="secondary-btn" id="refreshButton" type="button">รีเฟรชข้อมูล</button>
+        <button class="logout-btn" id="teacherLogoutButton" type="button">ออกจากระบบ</button>
+      </div>
+    </header>
+
+    <main class="teacher-main">
+      <section class="page-head">
+        <div><h1>ภาพรวมการเรียนรู้ของนักเรียน</h1><p>ข้อมูลจาก Google Sheet กลาง อัปเดตตามการใช้งานของนักเรียน</p></div>
+        <div class="system-status"><span id="gameStatusDot"></span><div><small>สถานะระบบนักเรียน</small><strong id="gameStatusText">—</strong></div></div>
+      </section>
+
+      <section class="summary-grid">
+        <article><small>นักเรียน ม.6/5</small><strong id="metricStudents">0</strong><span>คน</span></article>
+        <article><small>เข้าสู่ระบบแล้ว</small><strong id="metricLoggedIn">0</strong><span>คน</span></article>
+        <article><small>เริ่มทำภารกิจ</small><strong id="metricStarted">0</strong><span>คน</span></article>
+        <article><small>ผ่านครบ 5 Mission</small><strong id="metricCompleted">0</strong><span>คน</span></article>
+        <article><small>คะแนนเฉลี่ย</small><strong id="metricAverage">0</strong><span>Eco Points</span></article>
+      </section>
+
+      <section class="mission-overview">
+        <div class="section-title"><div><h2>ความก้าวหน้าราย Mission</h2><p>จำนวนผู้เรียนที่เริ่มและผ่านแต่ละภารกิจ</p></div><span id="lastUpdated">—</span></div>
+        <div class="mission-bars" id="missionBars"></div>
+      </section>
+
+      <section class="students-section">
+        <div class="section-title student-tools">
+          <div><h2>รายชื่อนักเรียน</h2><p>กดที่รายชื่อเพื่อดูรายละเอียดการทำกิจกรรม</p></div>
+          <div class="filters">
+            <input id="studentSearch" type="search" placeholder="ค้นหารหัสหรือชื่อนักเรียน..." />
+            <select id="statusFilter">
+              <option value="all">ทั้งหมด</option>
+              <option value="not-started">ยังไม่เริ่ม</option>
+              <option value="started">กำลังทำ</option>
+              <option value="completed">ผ่านครบ</option>
+              <option value="test">บัญชีทดสอบ</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>รหัส</th><th>ชื่อ–นามสกุล</th><th>เข้าสู่ระบบล่าสุด</th><th>Mission</th><th>คะแนน</th><th>ระดับ</th><th>สถานะ</th><th></th></tr></thead>
+            <tbody id="studentsTableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state hidden" id="emptyStudents">ไม่พบข้อมูลที่ตรงกับตัวกรอง</div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="studentDetailDialog" class="detail-dialog">
+    <div class="detail-shell">
+      <button class="dialog-close" id="detailCloseButton" type="button" aria-label="ปิด">×</button>
+      <div id="studentDetailContent"></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="teacherToast" role="status" aria-live="polite"></div>
+  <script src="teacher.js"></script>
+</body>
+</html>
