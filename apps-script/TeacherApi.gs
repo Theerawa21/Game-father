@@ -13,6 +13,7 @@ function teacherLogin_(body) {
   const token = Utilities.getUuid() + Utilities.getUuid();
   CacheService.getScriptCache().put('teacher:' + token, JSON.stringify({ username: expectedUser, name: teacherName, createdAt: nowIso_() }), TEACHER_SESSION_SECONDS);
   logActivity_('TEACHER', expectedUser, 'TEACHER_LOGIN', 'DASHBOARD', '', token, body.device);
+  try { ensureDailyBackupTrigger_(); } catch (err) { console.error('Backup trigger:', err); }
   return { ok: true, token, expiresIn: TEACHER_SESSION_SECONDS, teacher: { username: expectedUser, name: teacherName } };
 }
 
@@ -218,7 +219,7 @@ function teacherExportReport_(body) {
 }
 
 function buildResearchReport_() {
-  const students = readObjects_(APP.SHEETS.STUDENTS).filter(s => String(s.Status || 'Active').toLowerCase() !== 'inactive');
+  const students = readObjects_(APP.SHEETS.STUDENTS).filter(s => String(s.Status || 'Active').toLowerCase() !== 'inactive' && String(s.Nickname || '').toUpperCase() !== 'TEST' && String(s.StudentID || '').trim() !== '12345');
   const missions = readObjects_(APP.SHEETS.MISSIONS).filter(r => isTrue_(r.IsActive)).sort((a,b) => Number(a.Order || 0) - Number(b.Order || 0));
   const progress = readObjects_(APP.SHEETS.PROGRESS);
   const scores = readObjects_(APP.SHEETS.RESEARCH_SCORES).filter(r => String(r.Status || '') === 'Completed');
@@ -262,6 +263,13 @@ function createBackupCopy_(source) {
 function scheduledDailyBackup() {
   try { const result = createBackupCopy_('DAILY'); logActivity_('SYSTEM', 'SYSTEM', 'BACKUP_DAILY', result.name, '', '', ''); }
   catch (err) { console.error(err); }
+}
+
+function ensureDailyBackupTrigger_() {
+  if (!isTrue_(settingsObject_().BACKUP_ENABLED)) return false;
+  const exists = ScriptApp.getProjectTriggers().some(t => t.getHandlerFunction() === 'scheduledDailyBackup');
+  if (!exists) ScriptApp.newTrigger('scheduledDailyBackup').timeBased().everyDays(1).atHour(2).create();
+  return true;
 }
 
 function setupDailyBackup() {
