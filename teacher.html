@@ -1,94 +1,16 @@
-<!doctype html>
-<html lang="th">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b6249" />
-  <title>LAUDATO QUEST | ระบบครูผู้สอน</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="teacher.css" />
-  <link rel="stylesheet" href="responsive.css" />
-</head>
-<body>
-  <section class="teacher-login" id="teacherLoginView">
-    <div class="login-card">
-      <a class="back-link" href="index.html">← กลับหน้าหลักระบบ</a>
-      <div class="teacher-mark">T</div>
-      <h1>ระบบครูผู้สอน</h1>
-      <p>ตรวจสอบความก้าวหน้า คะแนน การตอบคำถาม และ Reflection ของนักเรียนใน LAUDATO QUEST</p>
-      <form id="teacherLoginForm">
-        <label><span>ชื่อผู้ใช้</span><input id="teacherUsername" autocomplete="username" required /></label>
-        <label><span>รหัสผ่าน</span><input id="teacherPin" type="password" inputmode="numeric" autocomplete="current-password" required /></label>
-        <button type="submit" class="primary-btn" id="teacherLoginButton">เข้าสู่ระบบครู</button>
-      </form>
-      <p class="security-note">ข้อมูลส่วนครูตรวจสอบสิทธิ์ผ่าน Google Apps Script และไม่เก็บรหัสผ่านไว้ในหน้าเว็บ</p>
-    </div>
-  </section>
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#0b6249"><title>LAUDATO QUEST | ระบบครูผู้สอน</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="teacher.css"><link rel="stylesheet" href="research.css"><link rel="stylesheet" href="responsive.css"></head><body>
+<section class="teacher-login" id="teacherLoginView"><div class="login-card"><a class="back-link" href="index.html">← กลับหน้าหลักระบบ</a><div class="teacher-mark">T</div><h1>ระบบครูผู้สอน</h1><p>ควบคุมการเปิด–ปิดกิจกรรม ตรวจสอบ Timeline คะแนนเกม คะแนน Pre/Post และจัดเตรียมข้อมูลสำหรับการวิเคราะห์</p><form id="teacherLoginForm"><label><span>ชื่อผู้ใช้</span><input id="teacherUsername" autocomplete="username" required></label><label><span>รหัสผ่าน</span><input id="teacherPin" type="password" inputmode="numeric" autocomplete="current-password" required></label><button type="submit" class="primary-btn" id="teacherLoginButton">เข้าสู่ระบบครู</button></form><p class="security-note">ระบบตรวจสอบสิทธิ์ผ่าน Google Apps Script และใช้ session ชั่วคราว</p></div></section>
+<div class="dashboard hidden" id="teacherDashboard">
+<header class="teacher-topbar"><a class="brand" href="teacher.html"><span class="brand-mark">LQ</span><span><strong>LAUDATO QUEST</strong><small>Teacher Dashboard</small></span></a><div class="top-actions"><span class="teacher-name" id="teacherName">ครูผู้สอน</span><button class="secondary-btn" id="refreshButton" type="button">รีเฟรช</button><button class="logout-btn" id="teacherLogoutButton" type="button">ออกจากระบบ</button></div></header>
+<main class="teacher-main">
+<section class="page-head"><div><h1>ภาพรวมการเรียนรู้ของนักเรียน</h1><p>ติดตาม Pretest → Mission 1–5 → Posttest และควบคุมการเปิดใช้งานจากหน้าจอเดียว</p></div><div class="system-status"><span id="gameStatusDot"></span><div><small>สถานะระบบนักเรียน</small><strong id="gameStatusText">—</strong></div></div></section>
+<section class="summary-grid"><article><small>นักเรียน ม.6/5</small><strong id="metricStudents">0</strong><span>คน</span></article><article><small>เข้าสู่ระบบแล้ว</small><strong id="metricLoggedIn">0</strong><span>คน</span></article><article><small>ทำ Pretest แล้ว</small><strong id="metricPretest">0</strong><span>คน</span></article><article><small>เริ่ม Mission</small><strong id="metricStarted">0</strong><span>คน</span></article><article><small>รอ Posttest</small><strong id="metricWaitingPost">0</strong><span>คน</span></article><article><small>ครบกระบวนการ</small><strong id="metricCompleted">0</strong><span>คน</span></article><article><small>Eco Points เฉลี่ย</small><strong id="metricAverage">0</strong><span>คะแนน</span></article></section>
 
-  <div class="dashboard hidden" id="teacherDashboard">
-    <header class="teacher-topbar">
-      <a class="brand" href="teacher.html"><span class="brand-mark">LQ</span><span><strong>LAUDATO QUEST</strong><small>Teacher Dashboard</small></span></a>
-      <div class="top-actions">
-        <span class="teacher-name" id="teacherName">ครูผู้สอน</span>
-        <button class="secondary-btn" id="refreshButton" type="button">รีเฟรชข้อมูล</button>
-        <button class="logout-btn" id="teacherLogoutButton" type="button">ออกจากระบบ</button>
-      </div>
-    </header>
+<section class="teacher-control-panel"><div class="control-head"><div><h2>ควบคุมการใช้งาน</h2><p>การเปลี่ยนแปลงมีผลกับนักเรียนเมื่อเรียกข้อมูลครั้งถัดไป</p></div><div class="report-actions"><button class="report-btn" id="exportCsvButton" type="button">ดาวน์โหลด CSV</button><button class="report-btn excel" id="exportExcelButton" type="button">ดาวน์โหลด Excel</button><button class="report-btn backup" id="backupButton" type="button">สำรองข้อมูลตอนนี้</button></div></div>
+<div class="control-global-grid"><article class="control-card"><small>ระบบนักเรียน</small><strong id="controlGameLabel">—</strong><div class="toggle-row"><button class="toggle-btn" id="gameOpenButton">เปิด</button><button class="toggle-btn" id="gameCloseButton">ปิด</button></div></article><article class="control-card"><small>การส่งคำตอบ</small><strong id="controlAnswerLabel">—</strong><div class="toggle-row"><button class="toggle-btn" id="answersOpenButton">เปิด</button><button class="toggle-btn" id="answersCloseButton">ปิด</button></div></article><article class="control-card"><small>Mission ที่กำลังใช้งาน</small><strong>กำหนดภารกิจหลัก</strong><select id="activeMissionSelect"><option value="ALL">ALL · เปิดตามสถานะราย Mission</option></select></article><article class="control-card"><small>แบบวัดวิจัย</small><strong>Pretest / Posttest</strong><div class="toggle-row"><button class="toggle-btn" id="pretestToggle">Pretest</button><button class="toggle-btn" id="posttestToggle">Posttest</button></div></article></div>
+<div class="mission-control-list" id="missionControlList"></div></section>
 
-    <main class="teacher-main">
-      <section class="page-head">
-        <div><h1>ภาพรวมการเรียนรู้ของนักเรียน</h1><p>ข้อมูลจาก Google Sheet กลาง อัปเดตตามการใช้งานของนักเรียน</p></div>
-        <div class="system-status"><span id="gameStatusDot"></span><div><small>สถานะระบบนักเรียน</small><strong id="gameStatusText">—</strong></div></div>
-      </section>
-
-      <section class="summary-grid">
-        <article><small>นักเรียน ม.6/5</small><strong id="metricStudents">0</strong><span>คน</span></article>
-        <article><small>เข้าสู่ระบบแล้ว</small><strong id="metricLoggedIn">0</strong><span>คน</span></article>
-        <article><small>เริ่มทำภารกิจ</small><strong id="metricStarted">0</strong><span>คน</span></article>
-        <article><small>ผ่านครบ 5 Mission</small><strong id="metricCompleted">0</strong><span>คน</span></article>
-        <article><small>คะแนนเฉลี่ย</small><strong id="metricAverage">0</strong><span>Eco Points</span></article>
-      </section>
-
-      <section class="mission-overview">
-        <div class="section-title"><div><h2>ความก้าวหน้าราย Mission</h2><p>จำนวนผู้เรียนที่เริ่มและผ่านแต่ละภารกิจ</p></div><span id="lastUpdated">—</span></div>
-        <div class="mission-bars" id="missionBars"></div>
-      </section>
-
-      <section class="students-section">
-        <div class="section-title student-tools">
-          <div><h2>รายชื่อนักเรียน</h2><p>กดที่รายชื่อเพื่อดูรายละเอียดการทำกิจกรรม</p></div>
-          <div class="filters">
-            <input id="studentSearch" type="search" placeholder="ค้นหารหัสหรือชื่อนักเรียน..." />
-            <select id="statusFilter">
-              <option value="all">ทั้งหมด</option>
-              <option value="not-started">ยังไม่เริ่ม</option>
-              <option value="started">กำลังทำ</option>
-              <option value="completed">ผ่านครบ</option>
-              <option value="test">บัญชีทดสอบ</option>
-            </select>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>รหัส</th><th>ชื่อ–นามสกุล</th><th>เข้าสู่ระบบล่าสุด</th><th>Mission</th><th>คะแนน</th><th>ระดับ</th><th>สถานะ</th><th></th></tr></thead>
-            <tbody id="studentsTableBody"></tbody>
-          </table>
-        </div>
-        <div class="empty-state hidden" id="emptyStudents">ไม่พบข้อมูลที่ตรงกับตัวกรอง</div>
-      </section>
-    </main>
-  </div>
-
-  <dialog id="studentDetailDialog" class="detail-dialog">
-    <div class="detail-shell">
-      <button class="dialog-close" id="detailCloseButton" type="button" aria-label="ปิด">×</button>
-      <div id="studentDetailContent"></div>
-    </div>
-  </dialog>
-
-  <div class="toast" id="teacherToast" role="status" aria-live="polite"></div>
-  <script src="teacher.js"></script>
-</body>
-</html>
+<section class="mission-overview"><div class="section-title"><div><h2>ความก้าวหน้าราย Mission</h2><p>จำนวนผู้เรียนที่เริ่มและผ่านแต่ละภารกิจ</p></div><span id="lastUpdated">—</span></div><div class="mission-bars" id="missionBars"></div></section>
+<section class="students-section"><div class="section-title student-tools"><div><h2>รายชื่อนักเรียน</h2><p>กดรายชื่อเพื่อดู Timeline คะแนนแต่ละด้าน และ Reflection</p></div><div class="filters"><input id="studentSearch" type="search" placeholder="ค้นหารหัสหรือชื่อ..."><select id="statusFilter"><option value="all">ทั้งหมด</option><option value="not-started">🔴 ยังไม่เริ่ม</option><option value="started">🟡 กำลังทำ</option><option value="waiting-posttest">🔵 รอ Posttest</option><option value="completed">🟢 ครบกระบวนการ</option><option value="missing-M01">ยังไม่ผ่าน Mission 1</option><option value="missing-M02">ยังไม่ผ่าน Mission 2</option><option value="missing-M03">ยังไม่ผ่าน Mission 3</option><option value="missing-M04">ยังไม่ผ่าน Mission 4</option><option value="missing-M05">ยังไม่ผ่าน Mission 5</option><option value="missing-posttest">ยังไม่ทำ Posttest</option><option value="test">บัญชีทดสอบ</option></select></div></div><div class="table-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ–นามสกุล</th><th>ล่าสุด</th><th>Pretest</th><th>Mission</th><th>Posttest</th><th>Eco Points</th><th>สถานะ</th><th></th></tr></thead><tbody id="studentsTableBody"></tbody></table></div><div class="empty-state hidden" id="emptyStudents">ไม่พบข้อมูลที่ตรงกับตัวกรอง</div></section>
+</main></div>
+<dialog id="studentDetailDialog" class="detail-dialog"><div class="detail-shell"><button class="dialog-close" id="detailCloseButton" type="button">×</button><div id="studentDetailContent"></div></div></dialog><div class="toast" id="teacherToast" role="status" aria-live="polite"></div><script src="teacher.js"></script></body></html>
