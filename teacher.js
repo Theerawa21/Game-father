@@ -1,138 +1,39 @@
 const API_URL='https://script.google.com/macros/s/AKfycbzWimhfRTHSPucVbss7ZgyktRmrXv1Zs8CiW02-PUH6e7BLwmDmR_ytJI64oPVDUIXG/exec';
-const state={token:'',teacher:null,students:[],missions:[],summary:null};
+const state={token:'',teacher:null,students:[],missions:[],summary:{},controls:{}};
 const $=id=>document.getElementById(id);
-const loginView=$('teacherLoginView');
-const dashboard=$('teacherDashboard');
-const form=$('teacherLoginForm');
-const tbody=$('studentsTableBody');
-const detailDialog=$('studentDetailDialog');
+const loginView=$('teacherLoginView');const dashboard=$('teacherDashboard');const form=$('teacherLoginForm');const tbody=$('studentsTableBody');const detailDialog=$('studentDetailDialog');
 
-form.addEventListener('submit',loginTeacher);
-$('teacherLogoutButton').addEventListener('click',logoutTeacher);
-$('refreshButton').addEventListener('click',loadDashboard);
-$('studentSearch').addEventListener('input',renderStudents);
-$('statusFilter').addEventListener('change',renderStudents);
-$('detailCloseButton').addEventListener('click',()=>detailDialog.close());
-
+form.addEventListener('submit',loginTeacher);$('teacherLogoutButton').addEventListener('click',logoutTeacher);$('refreshButton').addEventListener('click',loadDashboard);$('studentSearch').addEventListener('input',renderStudents);$('statusFilter').addEventListener('change',renderStudents);$('detailCloseButton').addEventListener('click',()=>detailDialog.close());
+$('gameOpenButton').addEventListener('click',()=>control('SET_GAME_STATUS','OPEN'));$('gameCloseButton').addEventListener('click',()=>control('SET_GAME_STATUS','CLOSED'));$('answersOpenButton').addEventListener('click',()=>control('SET_ANSWER_SUBMISSION',true));$('answersCloseButton').addEventListener('click',()=>control('SET_ANSWER_SUBMISSION',false));$('activeMissionSelect').addEventListener('change',e=>control('SET_ACTIVE_MISSION',e.target.value));$('pretestToggle').addEventListener('click',()=>control('SET_PRETEST_ENABLED',!state.controls.pretestEnabled));$('posttestToggle').addEventListener('click',()=>control('SET_POSTTEST_ENABLED',!state.controls.posttestEnabled));$('exportCsvButton').addEventListener('click',()=>exportReport('CSV'));$('exportExcelButton').addEventListener('click',()=>exportReport('XLSX'));$('backupButton').addEventListener('click',createBackup);
 restoreSession();
 
-async function restoreSession(){
-  try{
-    const saved=JSON.parse(sessionStorage.getItem('lqTeacherSession')||'null');
-    if(!saved?.token)return;
-    state.token=saved.token; state.teacher=saved.teacher||null;
-    await loadDashboard();
-    enterDashboard();
-  }catch(_){sessionStorage.removeItem('lqTeacherSession');}
-}
+async function restoreSession(){try{const saved=JSON.parse(sessionStorage.getItem('lqTeacherSession')||'null');if(!saved?.token)return;state.token=saved.token;state.teacher=saved.teacher||null;await loadDashboard();enterDashboard();}catch(_){sessionStorage.removeItem('lqTeacherSession');}}
+async function loginTeacher(e){e.preventDefault();const username=$('teacherUsername').value.trim();const pin=$('teacherPin').value.trim();const btn=$('teacherLoginButton');btn.disabled=true;btn.textContent='กำลังตรวจสอบ...';try{const data=await apiPost({action:'teacherLogin',username,pin,device:navigator.userAgent});if(!data.ok)throw apiError(data);state.token=data.token;state.teacher=data.teacher;sessionStorage.setItem('lqTeacherSession',JSON.stringify({token:state.token,teacher:state.teacher}));await loadDashboard();enterDashboard();}catch(err){handleError(err);}finally{btn.disabled=false;btn.textContent='เข้าสู่ระบบครู';}}
+function enterDashboard(){loginView.classList.add('hidden');dashboard.classList.remove('hidden');$('teacherName').textContent=state.teacher?.name||'ครูผู้สอน';}
+async function logoutTeacher(){try{if(state.token)await apiPost({action:'teacherLogout',token:state.token,device:navigator.userAgent});}catch(_){}sessionStorage.removeItem('lqTeacherSession');state.token='';state.teacher=null;state.students=[];dashboard.classList.add('hidden');loginView.classList.remove('hidden');form.reset();}
 
-async function loginTeacher(e){
-  e.preventDefault();
-  const username=$('teacherUsername').value.trim();
-  const pin=$('teacherPin').value.trim();
-  const btn=$('teacherLoginButton');
-  btn.disabled=true; btn.textContent='กำลังตรวจสอบ...';
-  try{
-    const data=await apiPost({action:'teacherLogin',username,pin});
-    if(!data.ok)throw new Error(data.message||'เข้าสู่ระบบไม่สำเร็จ');
-    state.token=data.token; state.teacher=data.teacher;
-    sessionStorage.setItem('lqTeacherSession',JSON.stringify({token:state.token,teacher:state.teacher}));
-    await loadDashboard(); enterDashboard();
-  }catch(err){showToast(err.message||'ไม่สามารถเข้าสู่ระบบได้');}
-  finally{btn.disabled=false;btn.textContent='เข้าสู่ระบบครู';}
-}
+async function loadDashboard(){if(!state.token)return;$('refreshButton').disabled=true;try{const data=await apiPost({action:'teacherDashboard',token:state.token});if(!data.ok)throw apiError(data);state.students=data.students||[];state.missions=data.missions||[];state.summary=data.summary||{};state.controls=data.controls||{};renderSummary(data);renderControls();renderMissions(data);renderStudents();}catch(err){handleError(err);}finally{$('refreshButton').disabled=false;}}
+function renderSummary(data){const s=data.summary||{};$('metricStudents').textContent=s.totalStudents??0;$('metricLoggedIn').textContent=s.loggedInStudents??0;$('metricPretest').textContent=s.pretestCompleted??0;$('metricStarted').textContent=s.startedStudents??0;$('metricWaitingPost').textContent=s.waitingPosttest??0;$('metricCompleted').textContent=s.completedStudents??0;$('metricAverage').textContent=Number(s.averagePoints||0).toFixed(1).replace('.0','');const open=String(data.controls?.gameStatus||'OPEN')==='OPEN';$('gameStatusDot').className=open?'open':'closed';$('gameStatusText').textContent=open?'เปิดให้นักเรียนใช้งาน':'ปิดระบบนักเรียน';$('lastUpdated').textContent=`อัปเดตล่าสุด ${formatDateTime(data.generatedAt)}`;}
+function renderControls(){const c=state.controls;setTogglePair('gameOpenButton','gameCloseButton',c.gameStatus==='OPEN');setTogglePair('answersOpenButton','answersCloseButton',!!c.answerSubmissionEnabled);$('controlGameLabel').textContent=c.gameStatus==='OPEN'?'เปิดใช้งาน':'ปิดใช้งาน';$('controlAnswerLabel').textContent=c.answerSubmissionEnabled?'รับคำตอบอยู่':'ปิดรับคำตอบ';$('pretestToggle').classList.toggle('active',!!c.pretestEnabled);$('posttestToggle').classList.toggle('active',!!c.posttestEnabled);$('pretestToggle').textContent=`Pretest ${c.pretestEnabled?'ON':'OFF'}`;$('posttestToggle').textContent=`Posttest ${c.posttestEnabled?'ON':'OFF'}`;const select=$('activeMissionSelect');const current=select.value;select.innerHTML='<option value="ALL">ALL · เปิดตามสถานะราย Mission</option>'+state.missions.map(m=>`<option value="${esc(m.missionId)}">${esc(m.missionId)} · ${esc(m.title)}</option>`).join('');select.value=c.activeMission||current||'ALL';const list=$('missionControlList');list.innerHTML='';state.missions.forEach(m=>{const row=document.createElement('div');row.className='mission-control-row';row.innerHTML=`<span>${esc(m.missionId)}</span><strong>${esc(m.title)}</strong><button class="control-switch ${m.teacherOpen?'on':''}" data-kind="open">${m.teacherOpen?'เปิด Mission':'ปิด Mission'}</button><button class="control-switch answers ${m.acceptAnswers?'on':''}" data-kind="answers">${m.acceptAnswers?'รับคำตอบ':'ปิดคำตอบ'}</button>`;row.querySelector('[data-kind="open"]').addEventListener('click',()=>control('SET_MISSION_OPEN',!m.teacherOpen,m.missionId));row.querySelector('[data-kind="answers"]').addEventListener('click',()=>control('SET_MISSION_ANSWERS',!m.acceptAnswers,m.missionId));list.appendChild(row);});}
+function setTogglePair(onId,offId,on){$(onId).classList.toggle('active',on);$(offId).classList.toggle('active',!on);}
+async function control(command,value,missionId=''){try{const data=await apiPost({action:'teacherControl',token:state.token,command,value,missionId,device:navigator.userAgent});if(!data.ok)throw apiError(data);showToast('บันทึกการตั้งค่าแล้ว');await loadDashboard();}catch(err){handleError(err);}}
 
-function enterDashboard(){
-  loginView.classList.add('hidden'); dashboard.classList.remove('hidden');
-  $('teacherName').textContent=state.teacher?.name||'ครูผู้สอน';
-}
+function renderMissions(data){const box=$('missionBars');box.innerHTML='';const total=Math.max(1,Number(data.summary?.totalStudents||0));(data.missionStats||[]).forEach((m,i)=>{const pct=Math.round(Number(m.completed||0)/total*100);const row=document.createElement('div');row.className='mission-row';row.innerHTML=`<span class="mission-index">${String(i+1).padStart(2,'0')}</span><div class="mission-label"><strong>${esc(m.title)}</strong><small>${esc(m.topic||'')} · ${m.teacherOpen?'เปิด':'ปิด'} · ${m.acceptAnswers?'รับคำตอบ':'ปิดคำตอบ'}</small></div><div class="bar-track"><span style="width:${pct}%"></span></div><div class="mission-count"><strong>${m.completed||0}</strong> ผ่าน · ${m.started||0} เริ่ม</div>`;box.appendChild(row);});}
 
-function logoutTeacher(){
-  sessionStorage.removeItem('lqTeacherSession');
-  state.token='';state.teacher=null;state.students=[];
-  dashboard.classList.add('hidden');loginView.classList.remove('hidden');
-  form.reset();
-}
+function renderStudents(){const q=$('studentSearch').value.trim().toLowerCase();const filter=$('statusFilter').value;const rows=state.students.filter(s=>{const match=!q||`${s.studentId} ${s.fullName}`.toLowerCase().includes(q);if(!match)return false;if(filter==='all')return true;if(filter==='test')return s.isTest;if(filter==='missing-posttest')return !s.posttestCompleted&&!s.isTest;if(filter.startsWith('missing-'))return (s.missingMissions||[]).includes(filter.replace('missing-',''));return s.statusCode===filter;});tbody.innerHTML='';rows.forEach(s=>{const status=s.statusCode;const tr=document.createElement('tr');tr.innerHTML=`<td>${esc(s.studentId)}</td><td><span class="student-name">${esc(s.fullName)}</span>${s.isTest?'<div class="subtle">บัญชีทดสอบ</div>':''}</td><td>${s.lastLogin?formatDateTime(s.lastLogin):'<span class="subtle">ยังไม่เคยเข้า</span>'}</td><td>${s.pretestCompleted?`✓ ${scoreText(s.pretestOverall)}`:'—'}</td><td>${s.completedMissions||0}/5</td><td>${s.posttestCompleted?`✓ ${scoreText(s.posttestOverall)}`:'—'}</td><td>${Number(s.totalEcoPoints||0)}</td><td><span class="status-pill ${status}">${statusText(status)}</span></td><td><button class="view-btn" type="button">รายละเอียด</button></td>`;tr.addEventListener('click',()=>openStudent(s.studentId));tr.querySelector('.view-btn').addEventListener('click',e=>{e.stopPropagation();openStudent(s.studentId);});tbody.appendChild(tr);});$('emptyStudents').classList.toggle('hidden',rows.length!==0);}
+function statusText(s){return s==='completed'?'🟢 ครบกระบวนการ':s==='waiting-posttest'?'🔵 รอ Posttest':s==='started'?'🟡 กำลังทำ':s==='test'?'ทดสอบ':'🔴 ยังไม่เริ่ม';}
+function scoreText(v){return v===null||v===undefined?'':Number(v).toFixed(1).replace('.0','');}
 
-async function loadDashboard(){
-  if(!state.token)return;
-  $('refreshButton').disabled=true;
-  try{
-    const data=await apiPost({action:'teacherDashboard',token:state.token});
-    if(!data.ok){if(data.error==='UNAUTHORIZED')logoutTeacher();throw new Error(data.message||'โหลดข้อมูลไม่สำเร็จ');}
-    state.students=data.students||[];state.missions=data.missions||[];state.summary=data.summary||{};
-    renderSummary(data);renderMissions(data);renderStudents();
-  }catch(err){showToast(err.message||'โหลดข้อมูลไม่สำเร็จ');}
-  finally{$('refreshButton').disabled=false;}
-}
+async function openStudent(studentId){try{showToast('กำลังโหลดรายละเอียด...');const data=await apiPost({action:'teacherStudentDetail',token:state.token,studentId});if(!data.ok)throw apiError(data);renderStudentDetail(data);detailDialog.showModal();}catch(err){handleError(err);}}
+function renderStudentDetail(data){const s=data.student||{};const content=$('studentDetailContent');const timeline=(data.timeline||[]).map(t=>`<div class="timeline-item ${esc(t.status)}"><span class="timeline-dot">${t.status==='completed'?'✓':t.status==='in-progress'?'•':t.status==='waiting'?'↗':'○'}</span><div class="timeline-copy"><strong>${esc(t.label)}</strong><small>${t.timestamp?formatDateTime(t.timestamp):'ยังไม่มีข้อมูล'}</small></div><div class="timeline-meta">${t.score!==null&&t.score!==undefined?`${scoreText(t.score)} คะแนน<br>`:''}${t.attempts?`${t.attempts} ครั้ง`:''}</div></div>`).join('');const research=(data.researchScores||[]).map(r=>`<article class="research-score-card"><h4>${r.phase==='PRE'?'Pretest':'Posttest'} · Overall ${scoreText(r.overallScore)}</h4><div class="research-score-values"><span>D1<strong>${scoreText(r.domain1Score)}</strong></span><span>D2<strong>${scoreText(r.domain2Score)}</strong></span><span>D3<strong>${scoreText(r.domain3Score)}</strong></span><span>D4<strong>${scoreText(r.domain4Score)}</strong></span><span>รวม<strong>${scoreText(r.overallScore)}</strong></span></div></article>`).join('')||'<p class="subtle">ยังไม่มีคะแนนแบบวัด</p>';const progress=(data.progress||[]).map(p=>`<div class="progress-item"><span><strong>${esc(p.missionTitle||p.missionId)}</strong><br><small class="subtle">${esc(p.status||'')}</small></span><span>${Number(p.score||0)} คะแนน</span><span>${Number(p.attempts||0)} ครั้ง</span></div>`).join('')||'<p class="subtle">ยังไม่มีข้อมูลภารกิจ</p>';const reflections=(data.reflections||[]).map(r=>`<article class="reflection-card"><small>${esc(r.missionTitle||r.missionId)} · ${formatDateTime(r.timestamp)}</small><p>${esc(r.reflectionText||'—')}</p>${r.ecoCommitment?`<strong>Eco Commitment</strong><p>${esc(r.ecoCommitment)}</p>`:''}</article>`).join('')||'<p class="subtle">ยังไม่มี Reflection</p>';content.innerHTML=`<div class="detail-head"><h2>${esc(s.fullName||'')}</h2><p>รหัส ${esc(s.studentId||'')} · ${esc(s.className||'')}</p></div><div class="detail-metrics"><div><small>Eco Points</small><strong>${Number(s.totalEcoPoints||0)}</strong></div><div><small>ภารกิจผ่าน</small><strong>${data.completedMissions||0}/5</strong></div><div><small>คำตอบเกม</small><strong>${data.responseCount||0}</strong></div></div><section class="detail-section"><h3>Timeline การเรียนรู้</h3><div class="timeline">${timeline}</div></section><section class="detail-section"><h3>คะแนน Pretest / Posttest (0–100)</h3><div class="research-score-grid">${research}</div></section><section class="detail-section"><h3>ความก้าวหน้า Mission</h3><div class="progress-list">${progress}</div></section><section class="detail-section"><h3>Reflection และ Eco Commitment</h3>${reflections}</section>`;}
 
-function renderSummary(data){
-  const s=data.summary||{};
-  $('metricStudents').textContent=s.totalStudents??0;
-  $('metricLoggedIn').textContent=s.loggedInStudents??0;
-  $('metricStarted').textContent=s.startedStudents??0;
-  $('metricCompleted').textContent=s.completedStudents??0;
-  $('metricAverage').textContent=Number(s.averagePoints||0).toFixed(1).replace('.0','');
-  const open=String(data.gameStatus||'OPEN').toUpperCase()==='OPEN';
-  $('gameStatusDot').className=open?'open':'closed';
-  $('gameStatusText').textContent=open?'เปิดให้นักเรียนใช้งาน':'ปิดระบบนักเรียน';
-  $('lastUpdated').textContent=`อัปเดตล่าสุด ${formatDateTime(data.generatedAt)}`;
-}
+async function exportReport(format){const btn=format==='CSV'?$('exportCsvButton'):$('exportExcelButton');btn.disabled=true;const old=btn.textContent;btn.textContent='กำลังจัดทำ...';try{const data=await apiPost({action:'teacherExportReport',token:state.token,format,device:navigator.userAgent});if(!data.ok)throw apiError(data);if(format==='CSV')downloadBlob(new Blob([data.content],{type:'text/csv;charset=utf-8'}),data.filename);else{const bytes=Uint8Array.from(atob(data.base64),c=>c.charCodeAt(0));downloadBlob(new Blob([bytes],{type:data.mimeType}),data.filename);}showToast('ดาวน์โหลดรายงานเรียบร้อย');}catch(err){handleError(err);}finally{btn.disabled=false;btn.textContent=old;}}
+async function createBackup(){const btn=$('backupButton');btn.disabled=true;const old=btn.textContent;btn.textContent='กำลังสำรอง...';try{const data=await apiPost({action:'teacherCreateBackup',token:state.token,device:navigator.userAgent});if(!data.ok)throw apiError(data);showToast(`สำรองข้อมูลแล้ว: ${data.backup.name}`);}catch(err){handleError(err);}finally{btn.disabled=false;btn.textContent=old;}}
+function downloadBlob(blob,filename){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 
-function renderMissions(data){
-  const box=$('missionBars');box.innerHTML='';
-  const total=Math.max(1,Number(data.summary?.totalStudents||0));
-  (data.missionStats||[]).forEach((m,i)=>{
-    const percent=Math.round((Number(m.completed||0)/total)*100);
-    const row=document.createElement('div');row.className='mission-row';
-    row.innerHTML=`<span class="mission-index">${String(i+1).padStart(2,'0')}</span><div class="mission-label"><strong>${esc(m.title)}</strong><small>${esc(m.topic||'')}</small></div><div class="bar-track"><span style="width:${percent}%"></span></div><div class="mission-count"><strong>${m.completed||0}</strong> ผ่าน · ${m.started||0} เริ่ม</div>`;
-    box.appendChild(row);
-  });
-}
-
-function renderStudents(){
-  const q=$('studentSearch').value.trim().toLowerCase();
-  const filter=$('statusFilter').value;
-  const rows=state.students.filter(s=>{
-    const match=!q||`${s.studentId} ${s.fullName}`.toLowerCase().includes(q);
-    const status=studentStatus(s);
-    const filterOk=filter==='all'||filter===status||(filter==='test'&&s.isTest);
-    return match&&filterOk;
-  });
-  tbody.innerHTML='';
-  rows.forEach(s=>{
-    const status=studentStatus(s);const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${esc(s.studentId)}</td><td><span class="student-name">${esc(s.fullName)}</span>${s.isTest?'<div class="subtle">บัญชีทดสอบ</div>':''}</td><td>${s.lastLogin?formatDateTime(s.lastLogin):'<span class="subtle">ยังไม่เคยเข้า</span>'}</td><td>${s.completedMissions||0}/5</td><td>${Number(s.totalEcoPoints||0)}</td><td>${esc(s.currentLevel||'Eco Explorer')}</td><td><span class="status-pill ${status}">${statusText(status)}</span></td><td><button class="view-btn" type="button">ดูรายละเอียด</button></td>`;
-    tr.addEventListener('click',()=>openStudent(s.studentId));
-    tr.querySelector('.view-btn').addEventListener('click',e=>{e.stopPropagation();openStudent(s.studentId);});
-    tbody.appendChild(tr);
-  });
-  $('emptyStudents').classList.toggle('hidden',rows.length!==0);
-}
-
-function studentStatus(s){if(s.isTest)return'test';if(Number(s.completedMissions||0)>=5)return'completed';if(Number(s.startedMissions||0)>0)return'started';return'not-started';}
-function statusText(s){return s==='completed'?'ผ่านครบ':s==='started'?'กำลังทำ':s==='test'?'ทดสอบ':'ยังไม่เริ่ม';}
-
-async function openStudent(studentId){
-  try{
-    showToast('กำลังโหลดรายละเอียด...');
-    const data=await apiPost({action:'teacherStudentDetail',token:state.token,studentId});
-    if(!data.ok)throw new Error(data.message||'โหลดรายละเอียดไม่สำเร็จ');
-    renderStudentDetail(data);detailDialog.showModal();
-  }catch(err){showToast(err.message||'โหลดรายละเอียดไม่สำเร็จ');}
-}
-
-function renderStudentDetail(data){
-  const s=data.student||{};const content=$('studentDetailContent');
-  const progress=(data.progress||[]).map(p=>`<div class="progress-item"><span><strong>${esc(p.missionTitle||p.missionId)}</strong><br><small class="subtle">${esc(p.status||'')}</small></span><span>${Number(p.score||0)} คะแนน</span><span>${Number(p.attempts||0)} ครั้ง</span></div>`).join('')||'<p class="subtle">ยังไม่มีข้อมูลภารกิจ</p>';
-  const reflections=(data.reflections||[]).map(r=>`<article class="reflection-card"><small>${esc(r.missionTitle||r.missionId)} · ${formatDateTime(r.timestamp)}</small><p>${esc(r.reflectionText||'—')}</p>${r.ecoCommitment?`<strong>Eco Commitment</strong><p>${esc(r.ecoCommitment)}</p>`:''}</article>`).join('')||'<p class="subtle">ยังไม่มี Reflection</p>';
-  content.innerHTML=`<div class="detail-head"><h2>${esc(s.fullName||'')}</h2><p>รหัส ${esc(s.studentId||'')} · ${esc(s.className||'')}</p></div><div class="detail-metrics"><div><small>Eco Points</small><strong>${Number(s.totalEcoPoints||0)}</strong></div><div><small>ภารกิจผ่าน</small><strong>${data.completedMissions||0}/5</strong></div><div><small>คำตอบที่บันทึก</small><strong>${data.responseCount||0}</strong></div></div><section class="detail-section"><h3>ความก้าวหน้าแต่ละ Mission</h3><div class="progress-list">${progress}</div></section><section class="detail-section"><h3>Reflection และ Eco Commitment</h3>${reflections}</section>`;
-}
-
-async function apiPost(payload){
-  const r=await fetch(API_URL,{method:'POST',redirect:'follow',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-  if(!r.ok)throw new Error(`API HTTP ${r.status}`);return r.json();
-}
+async function apiPost(payload){const r=await fetch(API_URL,{method:'POST',redirect:'follow',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});if(!r.ok)throw new Error(`API HTTP ${r.status}`);return r.json();}
+function apiError(data){const e=new Error(data.message||'ระบบไม่สามารถดำเนินการได้');e.code=data.error;return e;}
+function handleError(err){console.error(err);if(err.code==='UNAUTHORIZED'){sessionStorage.removeItem('lqTeacherSession');state.token='';dashboard.classList.add('hidden');loginView.classList.remove('hidden');}showToast(err.message||'เกิดข้อผิดพลาด');}
 function formatDateTime(v){if(!v)return'—';const d=new Date(v);if(Number.isNaN(d.getTime()))return v;return new Intl.DateTimeFormat('th-TH',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Bangkok'}).format(d);}
 function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');}
-function showToast(msg){const t=$('teacherToast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove('show'),2800);}
+function showToast(msg){const t=$('teacherToast');t.textContent=msg;t.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove('show'),3200);}
